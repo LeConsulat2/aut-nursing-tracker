@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type ReactElement, useRef } from 'react';
+import { useState, useEffect, useCallback, type ReactElement } from 'react';
 import { CheckCircle, XCircle, Plus, AlertCircle, GraduationCap } from 'lucide-react';
 import {
   AUT_NURSING_COURSE_REQUIREMENTS,
@@ -365,7 +365,7 @@ const ProgressTracker = (): ReactElement => {
 
         {/* Main Course Requirements Section */}
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 flex-grow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">AUT Nursing Curriculum ({AUT_NURSING_COURSE_REQUIREMENTS.reduce((sum, course) => sum + course.points, 0)} points)</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">AUT Nursing Curriculum Courses</h2>
           <div className="space-y-2 max-h-[70vh] overflow-y-auto custom-scroll">
             {AUT_NURSING_COURSE_REQUIREMENTS.map((course) => {
               const statusEntry = courseStatuses.find(s => s.code === course.code) || { status: 'not-started', attempts: 0 };
