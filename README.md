@@ -20,6 +20,7 @@ src/
 │
 └── App.tsx                         # Application entry point that renders pages/Home
 
+![Preview of the Tracker](/readme-image.png)
 
 **Here's a detailed breakdown of the transformations required for each new/modified file:**
 
