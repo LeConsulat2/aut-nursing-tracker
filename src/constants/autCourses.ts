@@ -1,10 +1,5 @@
-export interface Course {
-  code: string;
-  name: string;
-  level: number;
-  points: number;
-  pathway: string;
-}
+// src/constants/autCourses.ts
+import type { Course } from '../types/courseTypes';
 
 export const AUT_NURSING_COURSE_REQUIREMENTS: Course[] = [
   { code: 'HEAL504', name: 'Lifespan Development and Communication', level: 5, points: 15, pathway: 'Part I' },
@@ -33,5 +28,3 @@ export const AUT_NURSING_COURSE_REQUIREMENTS: Course[] = [
 ];
 
 export const TOTAL_GRADUATION_POINTS = 360;
-export const PASSING_GRADES_PASTE = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C'];
-export const FAILING_GRADES_PASTE = ['D', 'F', 'W'];
