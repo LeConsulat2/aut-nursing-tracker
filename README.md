@@ -1,19 +1,25 @@
 src/
 ├── components/
-│   ├── AddCustomCourseForm.tsx   // The form to add/edit custom courses
-│   ├── CourseItem.tsx            // Renders a single course row (predefined or custom)
-│   ├── ProgressSummary.tsx       // Displays total points and graduation status
-│   └── ... (any other small, reusable UI components)
+│   ├── AddCustomCourseForm.tsx     # The form to add/edit custom courses
+│   ├── CourseItem.tsx              # Renders a single course row (predefined or custom)
+│   ├── ProgressSummary.tsx         # Displays total points and graduation status
+│   └── ...                         # Any other small, reusable UI components
+│
 ├── constants/
-│   ├── autCourses.ts             // AUT_NURSING_COURSE_REQUIREMENTS, TOTAL_GRADUATION_POINTS
-│   └── grades.ts                 // PASSING_GRADES, FAILING_GRADES
+│   ├── autCourses.ts               # AUT_NURSING_COURSE_REQUIREMENTS, TOTAL_GRADUATION_POINTS
+│   └── grades.ts                   # PASSING_GRADES, FAILING_GRADES
+│
 ├── hooks/
-│   └── useCourseProgress.ts      // Your custom hook with all the state and logic
+│   └── useCourseProgress.ts        # Custom hook containing all core state and logic
+│
 ├── pages/
-│   └── Home.tsx                  // This is your main "Progress Tracker" page
+│   └── Home.tsx                    # Main "Progress Tracker" page
+│
 ├── types/
-│   └── courseTypes.ts            // All your TypeScript interfaces and types
-└── App.tsx                       // Or your main application entry point that renders pages/Home
+│   └── courseTypes.ts              # TypeScript interfaces and course-related types
+│
+└── App.tsx                         # Application entry point that renders pages/Home
+
 
 **Here's a detailed breakdown of the transformations required for each new/modified file:**
 
