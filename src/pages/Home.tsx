@@ -1,7 +1,11 @@
 import ProgressTracker from "../components/ProgressTracker";
 
-export default function Home() {
+const Home = () => {
     return (
-        <ProgressTracker />
+        <div className="min-h-screen bg-gray-50">
+            <ProgressTracker />
+        </div>
     );
-}
+};
+
+export default Home;
