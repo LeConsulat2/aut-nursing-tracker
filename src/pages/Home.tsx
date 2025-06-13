@@ -24,6 +24,7 @@ const Home = (): ReactElement => {
   const [showPassedCourses, setShowPassedCourses] = useState(true);
   const [showBulkUpdate, setShowBulkUpdate] = useState(false);
   const [showAddCourse, setShowAddCourse] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const handlePasteClick = useCallback(() => {
     if (pastedText.trim()) {
@@ -32,7 +33,7 @@ const Home = (): ReactElement => {
     }
   }, [pastedText, pasteData]);
 
-  // Get passed courses
+  // Get passed courses for the right sidebar
   const passedCourses = [
     ...AUT_NURSING_COURSE_REQUIREMENTS.filter(course => {
       const status = courseStatuses.find(s => s.code === course.code);
@@ -46,13 +47,10 @@ const Home = (): ReactElement => {
     ...customCourses.filter(course => ['passed', 'completed'].includes(course.status))
   ];
 
-  // Get remaining courses (not passed)
-  const remainingCourses = [
-    ...AUT_NURSING_COURSE_REQUIREMENTS.filter(course => {
-      const status = courseStatuses.find(s => s.code === course.code);
-      return !status || !['passed', 'completed'].includes(status.status);
-    }),
-    ...customCourses.filter(course => !['passed', 'completed'].includes(course.status))
+  // Get all courses for the left side (both passed and not passed)
+  const allCourses = [
+    ...AUT_NURSING_COURSE_REQUIREMENTS,
+    ...customCourses
   ];
 
   const progressPercentage = Math.min((currentTotalPoints / TOTAL_GRADUATION_POINTS) * 100, 100);
@@ -87,7 +85,7 @@ const Home = (): ReactElement => {
                 <div className="text-xs sm:text-sm text-gray-500">Passed</div>
               </div>
               <div className="text-center">
-                <div className="text-xl sm:text-2xl font-bold text-orange-600">{remainingCourses.length}</div>
+                <div className="text-xl sm:text-2xl font-bold text-orange-600">{allCourses.length - passedCourses.length}</div>
                 <div className="text-xs sm:text-sm text-gray-500">Remaining</div>
               </div>
             </div>
@@ -143,7 +141,7 @@ const Home = (): ReactElement => {
               </button>
               
               <button
-                onClick={resetAllProgress}
+                onClick={() => setShowResetConfirm(true)}
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 <RotateCcw className="w-5 h-5" />
@@ -194,24 +192,21 @@ const Home = (): ReactElement => {
               </div>
             )}
 
-            {/* Remaining Courses */}
+            {/* All Courses */}
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                  <Target className="w-6 h-6 text-orange-600" />
-                  Courses to Complete
+                  <Target className="w-6 h-6 text-blue-600" />
+                  All Courses
                   <span className="text-sm font-normal text-gray-500 ml-2">
-                    ({remainingCourses.length} remaining)
+                    ({allCourses.length} total)
                   </span>
                 </h2>
               </div>
               
               <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                 {/* Required Courses */}
-                {AUT_NURSING_COURSE_REQUIREMENTS.filter(course => {
-                  const status = courseStatuses.find(s => s.code === course.code);
-                  return !status || !['passed', 'completed'].includes(status.status);
-                }).map((course) => {
+                {AUT_NURSING_COURSE_REQUIREMENTS.map((course) => {
                   const statusInfo = courseStatuses.find(s => s.code === course.code) || {
                     status: 'not-started',
                     attempts: 0
@@ -230,7 +225,7 @@ const Home = (): ReactElement => {
                 })}
 
                 {/* Custom Courses */}
-                {customCourses.filter(course => !['passed', 'completed'].includes(course.status)).map((course) => (
+                {customCourses.map((course) => (
                   <CourseItem
                     key={course.code}
                     course={course}
@@ -281,13 +276,20 @@ const Home = (): ReactElement => {
                     passedCourses.map((course) => (
                       <div
                         key={course.code}
-                        className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl transform transition-all duration-200 hover:scale-105 hover:shadow-md"
+                        className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl transition-all duration-200 hover:shadow-md cursor-pointer group"
+                        onClick={() => {
+                          // Toggle back to not-started when clicked
+                          updateCourseStatus(course.code, 'not-started');
+                        }}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <h3 className="font-semibold text-gray-900 flex items-center gap-2 group-hover:text-gray-700 transition-colors">
                               <CheckCircle className="w-5 h-5 text-green-600" />
                               {course.code}
+                              <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                (click to uncheck)
+                              </span>
                             </h3>
                             <p className="text-sm text-gray-600 mt-1">{course.name}</p>
                             <div className="flex items-center gap-4 mt-2">
@@ -301,6 +303,9 @@ const Home = (): ReactElement => {
                               )}
                             </div>
                           </div>
+                          <div className="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <XCircle className="w-5 h-5 text-gray-400" />
+                          </div>
                         </div>
                       </div>
                     ))
@@ -311,6 +316,45 @@ const Home = (): ReactElement => {
           </div>
         </div>
       </div>
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-in slide-in-from-bottom-4 duration-300">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <RotateCcw className="w-8 h-8 text-red-600" />
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+                Reset All Progress?
+              </h3>
+              
+              <p className="text-gray-600 text-center mb-6">
+                This will permanently delete all your course progress, custom courses, and reset your points to zero. This action cannot be undone.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setShowResetConfirm(false)}
+                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    resetAllProgress();
+                    setShowResetConfirm(false);
+                  }}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors duration-200"
+                >
+                  Yes, Reset All
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Custom Scrollbar Styles */}
       <style jsx>{`
@@ -332,6 +376,17 @@ const Home = (): ReactElement => {
         @keyframes slide-in-from-top-2 {
           from {
             transform: translateY(-8px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes slide-in-from-bottom-4 {
+          from {
+            transform: translateY(16px);
             opacity: 0;
           }
           to {
