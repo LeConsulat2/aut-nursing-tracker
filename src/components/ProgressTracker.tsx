@@ -3,12 +3,9 @@ import { CheckCircle, XCircle, Plus, AlertCircle, GraduationCap } from 'lucide-r
 import {
   AUT_NURSING_COURSE_REQUIREMENTS,
   TOTAL_GRADUATION_POINTS,
-  type Course
-} from '../constants/courses';
-
-// Constants for grade parsing
-const PASSING_GRADES = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'P'];
-const FAILING_GRADES = ['D', 'D+', 'E', 'F', 'D-', 'E+', 'E-', 'F+', 'F-', 'U'];
+} from '../constants/autCourses';
+import { PASSING_GRADES, FAILING_GRADES } from '../constants/grades';
+import type { Course } from '../types/courseTypes';
 
 // Type for course status
 type CourseStatus = 'passed' | 'failed' | 'not-started';
